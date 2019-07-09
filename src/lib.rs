@@ -1,9 +1,16 @@
+#![allow(warnings)]
 #![feature(try_from)]
-//extern crate base58;
 #[macro_use]
 extern crate failure;
 
+extern crate bytes;
 extern crate rust_base58;
+extern crate sha2;
+
+#[macro_use]
+mod macros;
 
 mod crypto;
-mod proto;
+#[macro_use]
+mod errors;
+pub mod proto;

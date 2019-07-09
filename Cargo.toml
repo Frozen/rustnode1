@@ -5,6 +5,8 @@ authors = ["Frozen <phpconf@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-base58 = "0.1.0"
+#base58 = "0.1.0"
 failure = "0.1.5"
 rust-base58 = "*"
+sha2 = "0.8.0"
+bytes = "0.4.12"
