@@ -1,3 +1,4 @@
+use crate::crypto;
 use crate::crypto::Digest;
 use crate::crypto::PublicKey;
 use crate::crypto::Signature;
@@ -21,6 +22,11 @@ use std::io::Write;
 //    Recipient   Recipient        `json:"recipient"`
 //    Attachment  Attachment       `json:"attachment,omitempty"`
 //}
+
+struct SignerTransferV1 {
+    body: UnsignedTransferV1,
+    signature: crypto::Signature,
+}
 
 struct UnsignedTransferV1 {
     id: Option<Digest>,
@@ -76,15 +82,19 @@ impl UnsignedTransferV1 {
         return Ok(out);
     }
 
-    pub fn bytes(s: &mut Serializer) -> Result<(), failure::Error> {
+    pub fn bytes(&self, s: &mut Serializer) -> Result<(), failure::Error> {
         Ok(())
     }
 
-    fn body_bytes(&self, s: &mut Serializer) -> Result<(), failure::Error> {
-        //        self.recipient.bytes(s)?; // TODO
-
-        Ok(())
+    pub fn sign(&self, secret: crypto::SecretKey) -> Result<SignerTransferV1, ConvertError> {
+        return bad_args!("not implemented");
     }
+
+    //    fn body_bytes(&self, s: &mut Serializer) -> Result<(), failure::Error> {
+    //        //        self.recipient.bytes(s)?; // TODO
+    //
+    //        Ok(())
+    //    }
 }
 
 #[cfg(test)]
