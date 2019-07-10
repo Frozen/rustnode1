@@ -37,7 +37,7 @@ impl Into<String> for Address {
 }
 
 impl Address {
-    pub fn bytes(&self, s: &mut Serializer) -> Result<(), failure::Error> {
+    pub fn bytes(&self, s: &mut Serializer) -> Result<(), ConvertError> {
         //        self.0.
         Ok(())
     }

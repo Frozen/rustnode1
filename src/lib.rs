@@ -3,6 +3,7 @@
 #[macro_use]
 extern crate failure;
 
+extern crate byteorder;
 extern crate bytes;
 extern crate rust_base58;
 extern crate sha2;

@@ -1,3 +1,4 @@
+use crate::errors::ConvertError;
 use bytes::{BigEndian, BufMut, BytesMut};
 
 pub struct Serializer {
@@ -13,6 +14,28 @@ impl Serializer {
 
     pub fn put(&mut self, bytes: &[u8]) {
         self.bytes.put(bytes);
+    }
+
+    pub fn byte(&mut self, b: u8) {
+        self.bytes.put_u8(b)
+    }
+
+    pub fn u16string(&mut self, s: &str) -> Result<(), ConvertError> {
+        if s.len() > std::u16::MAX as usize {
+            return bad_args!(
+                "invalid length for string, expected max {}, found {}",
+                std::u16::MAX,
+                s.len()
+            );
+        }
+
+        self.bytes.put_u16_be(s.len() as u16);
+        self.bytes.put_slice(s.as_bytes());
+        Ok(())
+    }
+
+    pub fn as_bytes(&self) -> &[u8] {
+        &self.bytes
     }
 }
 

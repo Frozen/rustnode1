@@ -1,16 +1,24 @@
 //#[macro_use]
 use crate::errors::ConvertError;
 use crate::macros;
-use crate::proto::scheme;
 use crate::proto::scheme::Scheme;
+use crate::proto::{scheme, Serializer};
+use byteorder::{BigEndian, ReadBytesExt};
+//use bytes::{BigEndian, ByteOrder};
 use rust_base58::FromBase58;
 use std::convert::TryFrom;
+use std::io::Cursor;
+use std::io::Read;
+use std::str;
+use std::sync::atomic::Ordering::AcqRel;
 
 const ALIAS_VERSION: u8 = 0x02;
 const ALIAS_MIN_LENGTH: usize = 4;
 const ALIAS_MAX_LENGTH: usize = 30;
 const ALIAS_PREFIX: &str = "alias";
+const ALIAS_BINARY_MIN_LENGTH: u8 = 8;
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct Alias {
     version: u8,
     scheme: u8,
@@ -37,8 +45,14 @@ impl Alias {
         });
     }
 
-    fn to_string(&self) -> String {
+    pub fn to_string(&self) -> String {
         format!("{}:{}:{}", ALIAS_PREFIX, self.scheme, self.alias)
+    }
+
+    pub fn bytes(&self, s: &mut Serializer) -> Result<(), ConvertError> {
+        s.byte(self.version);
+        s.byte(self.scheme);
+        s.u16string(&self.alias)
     }
 }
 
@@ -93,6 +107,25 @@ impl TryFrom<&str> for Alias {
     }
 }
 
+impl TryFrom<&[u8]> for Alias {
+    type Error = ConvertError;
+
+    fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
+        let mut c = Cursor::new(value);
+        let version = c.read_u8()?;
+        let scheme = c.read_u8()?;
+        let len = c.read_u16::<BigEndian>()?;
+        let mut buf = vec![0; len as usize];
+        c.read(&mut buf)?;
+
+        Ok(Alias {
+            version,
+            scheme,
+            alias: str::from_utf8(&buf)?.to_string(),
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
 
@@ -103,11 +136,15 @@ mod tests {
         let a = Alias::new(scheme::MainNet, "stonescissors").unwrap();
     }
 
-    //    #[test]
-    //    fn test_alias_try_from() {
-    //        let s = "alias:T:blah-blah-blah";
-    //        let a = Alias::try_from(s).unwrap();
-    //
-    //        assert_eq!(a.alias, "blah-blah-blah")
-    //    }
+    #[test]
+    fn test_bytes() {
+        let a = Alias::new(scheme::MainNet, "stonescissors").unwrap();
+
+        let mut s = Serializer::new();
+        a.bytes(&mut s).unwrap();
+
+        let a2 = Alias::try_from(s.as_bytes()).unwrap();
+        assert_eq!(a, a2)
+    }
+
 }

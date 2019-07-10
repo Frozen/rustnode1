@@ -34,7 +34,6 @@ struct UnsignedTransferV1 {
     amount: u64,
     r#type: TransactionType,
     version: u8,
-    //    signature: Option<Signature>,
     sender_pk: PublicKey,
     fee_asset: Option<Asset>,
     timestamp: Timestamp,
@@ -54,12 +53,6 @@ impl UnsignedTransferV1 {
         recipient: Recipient,
         attachment: Attachment,
     ) -> Result<UnsignedTransferV1, ConvertError> {
-        if amount <= 0 {
-            return Err(ConvertError::BadArg("amount should be positive".into()));
-        }
-        if fee <= 0 {
-            return Err(ConvertError::BadArg("fee should be positive".into()));
-        }
         //        if attachment.len() > MAX_ATTACHMENT_LENGTH_BYTES {
         //            return Err(ConvertError::BadArg("attachment too long".into()));
         //        }
@@ -70,7 +63,6 @@ impl UnsignedTransferV1 {
             amount,
             r#type: TransactionType::TransferTransaction,
             version: 1,
-            //            signature: None,
             sender_pk,
             fee_asset,
             timestamp,
@@ -89,12 +81,6 @@ impl UnsignedTransferV1 {
     pub fn sign(&self, secret: crypto::SecretKey) -> Result<SignerTransferV1, ConvertError> {
         return bad_args!("not implemented");
     }
-
-    //    fn body_bytes(&self, s: &mut Serializer) -> Result<(), failure::Error> {
-    //        //        self.recipient.bytes(s)?; // TODO
-    //
-    //        Ok(())
-    //    }
 }
 
 #[cfg(test)]
