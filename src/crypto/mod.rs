@@ -5,7 +5,7 @@ mod signature;
 
 pub use crate::crypto::public_key::PublicKey;
 pub use crate::crypto::secret_key::SecretKey;
-pub use digest::Digest;
+pub use digest::{Digest, DIGEST_SIZE};
 pub use signature::Signature;
 
 use sha2::Sha256;

@@ -15,3 +15,4 @@ mod crypto;
 #[macro_use]
 mod errors;
 pub mod proto;
+mod bytes_ext;
