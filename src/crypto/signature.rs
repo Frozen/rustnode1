@@ -47,5 +47,4 @@ mod tests {
 
         assert_eq!("2Nnm3hfK6CnG5NHK3BKzvxFuAuPRW67PUrC5Ssw6NcWqc4x5D9T2NVWrNozkyCCpD4wSP2Z9JxcZfdKmNEXtBTzx", &z)
     }
-
 }

@@ -13,7 +13,7 @@ pub enum ConvertError {
     IO(std::io::Error),
 
     #[fail(display = "{}", _0)]
-    Utf8Error(std::str::Utf8Error),
+    Utf8Error(std::string::FromUtf8Error),
 }
 
 impl From<rust_base58::base58::FromBase58Error> for ConvertError {
@@ -28,14 +28,8 @@ impl From<std::io::Error> for ConvertError {
     }
 }
 
-impl From<std::str::Utf8Error> for ConvertError {
-    fn from(e: std::str::Utf8Error) -> Self {
+impl From<std::string::FromUtf8Error> for ConvertError {
+    fn from(e: std::string::FromUtf8Error) -> Self {
         ConvertError::Utf8Error(e)
     }
 }
-
-//
-//}
-//pub fn badArgs() {
-//    format!()
-//}

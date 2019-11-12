@@ -30,9 +30,9 @@ impl TryFrom<&str> for SecretKey {
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         let rs = value.from_base58()?;
-        if rs.len() != SECRET_KEY_SIZE {
+        if rs.len() < SECRET_KEY_SIZE {
             return Err(ConvertError::InvalidLength(format!(
-                "expected size {}, found {}",
+                "expected size at least {}, found {}",
                 SECRET_KEY_SIZE,
                 rs.len()
             ))

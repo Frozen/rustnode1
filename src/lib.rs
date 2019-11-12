@@ -9,9 +9,11 @@ extern crate rust_base58;
 extern crate sha2;
 
 #[macro_use]
+mod errors;
+
+#[macro_use]
 mod macros;
 
 mod crypto;
-#[macro_use]
-mod errors;
+
 pub mod proto;

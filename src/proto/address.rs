@@ -2,6 +2,7 @@ use crate::errors::ConvertError;
 use crate::proto::serializer::Serializer;
 use rust_base58::{FromBase58, ToBase58};
 use std::convert::TryFrom;
+use std::io;
 
 const headerSize: usize = 2;
 const bodySize: usize = 20;
@@ -41,6 +42,15 @@ impl Address {
         //        self.0.
         Ok(())
     }
+
+    pub fn deserialize<R>(r: &mut R) -> Result<Self, ConvertError>
+    where
+        R: io::Read,
+    {
+        let mut buf = [0u8; ADDRESS_SIZE];
+        r.read_exact(&mut buf)?;
+        Ok(Address(buf))
+    }
 }
 
 #[cfg(test)]
@@ -58,5 +68,4 @@ mod tests {
 
         assert_eq!(s, &z)
     }
-
 }

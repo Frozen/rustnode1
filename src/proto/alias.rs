@@ -9,8 +9,8 @@ use rust_base58::FromBase58;
 use std::convert::TryFrom;
 use std::io::Cursor;
 use std::io::Read;
-use std::str;
 use std::sync::atomic::Ordering::AcqRel;
+use std::{io, str};
 
 const ALIAS_VERSION: u8 = 0x02;
 const ALIAS_MIN_LENGTH: usize = 4;
@@ -54,6 +54,8 @@ impl Alias {
         s.byte(self.scheme);
         s.u16string(&self.alias)
     }
+
+    //    pub fn deserialize<R: io::Read>(r: R) -> Result<Self, ConvertError> {}
 }
 
 fn correct_alphabet(s: &str) -> bool {
@@ -121,7 +123,7 @@ impl TryFrom<&[u8]> for Alias {
         Ok(Alias {
             version,
             scheme,
-            alias: str::from_utf8(&buf)?.to_string(),
+            alias: String::from_utf8(buf)?,
         })
     }
 }
@@ -146,5 +148,4 @@ mod tests {
         let a2 = Alias::try_from(s.as_bytes()).unwrap();
         assert_eq!(a, a2)
     }
-
 }

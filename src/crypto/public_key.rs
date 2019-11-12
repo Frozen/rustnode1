@@ -30,6 +30,16 @@ pub struct PublicKey([u8; PUBLIC_KEY_SIZE]);
 //    }
 //}
 
+impl PublicKey {
+    pub const fn size() -> usize {
+        PUBLIC_KEY_SIZE
+    }
+
+    pub fn from_bytes(b: [u8; 32]) -> Self {
+        PublicKey(b)
+    }
+}
+
 impl TryFrom<&str> for PublicKey {
     type Error = ConvertError;
 

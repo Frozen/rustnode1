@@ -2,6 +2,7 @@ mod address;
 mod alias;
 mod asset;
 mod attachment;
+mod deserializer;
 mod proto;
 mod recipient;
 mod scheme;

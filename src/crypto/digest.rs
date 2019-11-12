@@ -2,9 +2,15 @@ use crate::errors::ConvertError;
 use rust_base58::{FromBase58, ToBase58};
 use std::convert::TryFrom;
 
-const DIGEST_SIZE: usize = 32;
+pub const DIGEST_SIZE: usize = 32;
 
 pub struct Digest([u8; DIGEST_SIZE]);
+
+impl Digest {
+    pub const fn from_bytes(b: [u8; DIGEST_SIZE]) -> Digest {
+        Digest(b)
+    }
+}
 
 impl TryFrom<&str> for Digest {
     type Error = ConvertError;
