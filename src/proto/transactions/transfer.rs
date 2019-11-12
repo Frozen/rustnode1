@@ -12,7 +12,6 @@ use crate::proto::recipient::Recipient;
 use crate::proto::serializer::Serializer;
 use crate::proto::timestamp::Timestamp;
 use crate::proto::transactions::types::ID;
-use crate::proto::transactions::TransactionType;
 use crate::proto::transactions::{TransactionType, TRANSFER_TRANSACTION};
 use std::io;
 use std::io::Write;

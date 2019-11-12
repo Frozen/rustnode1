@@ -22,7 +22,7 @@ pub trait Deserializer: io::Read {
         if rs {
             let mut buf = [0u8; Asset::size()];
             self.read_exact(&mut buf)?;
-            Ok(Some(Asset::from_bytes(buf)))
+            Ok(Some(Asset::from(buf)))
         } else {
             Ok(None)
         }
