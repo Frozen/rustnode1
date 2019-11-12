@@ -17,3 +17,4 @@ mod macros;
 mod crypto;
 
 pub mod proto;
+mod bytes_ext;

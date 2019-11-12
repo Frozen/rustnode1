@@ -49,7 +49,7 @@ mod tests {
 
     #[test]
     fn test_recipient_bytes() {
-        let a = Alias::new(proto::scheme::MainNet, "bla").unwrap();
+        let a = Alias::new(proto::scheme::MainNet, "blabla").unwrap();
         let rec = Recipient::Alias(a);
     }
 }

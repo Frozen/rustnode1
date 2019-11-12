@@ -1,3 +1,4 @@
+use super::types::TransactionFields;
 use crate::crypto;
 use crate::crypto::Digest;
 use crate::crypto::PublicKey;
@@ -10,6 +11,8 @@ use crate::proto::deserializer::Deserializer;
 use crate::proto::recipient::Recipient;
 use crate::proto::serializer::Serializer;
 use crate::proto::timestamp::Timestamp;
+use crate::proto::transactions::types::ID;
+use crate::proto::transactions::TransactionType;
 use crate::proto::transactions::{TransactionType, TRANSFER_TRANSACTION};
 use std::io;
 use std::io::Write;
@@ -25,13 +28,13 @@ use std::io::Write;
 //    Attachment  Attachment       `json:"attachment,omitempty"`
 //}
 
-struct SignerTransferV1 {
+pub struct SignedTransferV1 {
     body: UnsignedTransferV1,
     signature: crypto::Signature,
 }
 
-struct UnsignedTransferV1 {
-    id: Option<Digest>,
+pub struct UnsignedTransferV1 {
+    //    id: Option<Digest>,
     fee: u64,
     amount: u64,
     r#type: TransactionType,
@@ -55,12 +58,7 @@ impl UnsignedTransferV1 {
         recipient: Recipient,
         attachment: Attachment,
     ) -> Result<UnsignedTransferV1, ConvertError> {
-        //        if attachment.len() > MAX_ATTACHMENT_LENGTH_BYTES {
-        //            return Err(ConvertError::BadArg("attachment too long".into()));
-        //        }
-
         let out = UnsignedTransferV1 {
-            id: None,
             fee,
             amount,
             r#type: TransactionType::TransferTransaction,
@@ -76,11 +74,11 @@ impl UnsignedTransferV1 {
         return Ok(out);
     }
 
-    pub fn bytes(&self, s: &mut Serializer) -> Result<(), failure::Error> {
+    pub fn bytes(&self, s: &mut dyn bytes::buf::BufMut) -> Result<(), failure::Error> {
         Ok(())
     }
 
-    pub fn sign(&self, secret: crypto::SecretKey) -> Result<SignerTransferV1, ConvertError> {
+    pub fn sign(&self, secret: crypto::SecretKey) -> Result<SignedTransferV1, ConvertError> {
         return bad_args!("not implemented");
     }
 
