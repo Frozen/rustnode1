@@ -5,6 +5,7 @@ use crate::proto::deserializer::Deserializer;
 use crate::proto::recipient::Recipient::Address;
 use crate::proto::Serializer;
 use std::io;
+use std::io::{BufReader, Cursor, Read};
 
 const ADDRESS_VERSION: u8 = 1;
 const ALIAS_VERSION: u8 = 2;
@@ -26,12 +27,18 @@ impl Recipient {
     //    where
     //        R: io::Read,
     //    {
-    //        let v = r.byte();
+    //        let mut z = std::io::BufReader::new(r);
     //
+    //        //        z.take()
+    //        //        z.as_ref();
     //
+    //        //        let mut c = Cursor::new(z);
     //
+    //        //        c
     //
-    //
+    //        //        &z.iter().peekable();
+    //        //        z.
+    //        //        let v = r.byte();
     //
     //        match v {
     //            ADDRESS_VERSION => Ok(Recipient::Address(proto::Address::deserialize(&mut r)?)),

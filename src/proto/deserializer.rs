@@ -44,6 +44,28 @@ pub trait Deserializer: io::Read {
             _ => return bad_args!("expected bool 1 or 0, found {}", b),
         }
     }
+
+    fn u8string(&mut self) -> Result<String, ConvertError> {
+        let len = self.byte()?;
+        let mut s = vec![0; len as usize];
+        self.read_exact(&mut s)?;
+        let out = String::from_utf8(s)?;
+        Ok(out)
+    }
 }
 
 impl<R: io::Read> Deserializer for R {}
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn u8string() {
+        let bts = [3u8, 'a' as u8, 'b' as u8, 'c' as u8];
+        let mut x = &bts[..];
+        let rs = x.u8string().unwrap();
+        assert_eq!("abc", &rs);
+    }
+}
