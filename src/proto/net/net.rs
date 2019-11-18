@@ -1,9 +1,14 @@
 use crate::errors::ConvertError;
 use crate::proto::deserializer::Deserializer;
+use crate::proto::net::message::Message;
+use crate::proto::net::peers::PeersMessage;
 use crate::proto::Serializer;
 use byteorder::{BigEndian, ByteOrder, ReadBytesExt};
 use std::io;
-use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4};
+
+const CONTENT_ID_GET_PEERS: u8 = 0x1;
+const CONTENT_ID_PEERS: u8 = 0x2;
 
 // version represents the version of the protocol
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -91,14 +96,31 @@ fn parse_addr<R: io::Read>(r: &mut R) -> Result<Option<SocketAddr>, ConvertError
     }
 }
 
+pub fn parse_message<R: io::Read>(r: &mut R) -> Result<Message, ConvertError> {
+    let len = r.read_u32::<BigEndian>()?;
+    let magic = r.read_u32::<BigEndian>()?;
+    let content_id = r.byte()?;
+    let payload_length = r.read_u32::<BigEndian>()?;
+    if payload_length > 0 {
+        let csum = r.read_u32::<BigEndian>()?;
+    }
+    let rs = match content_id {
+        CONTENT_ID_GET_PEERS => Message::GetPeersMessage,
+        CONTENT_ID_PEERS => Message::PeersMessage(PeersMessage::deserialize(r)?),
+        _ => unimplemented!(),
+    };
+    Ok(rs)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use std::io::Cursor;
     use std::net::SocketAddrV4;
+    use std::path::Component::CurDir;
 
     #[test]
-    fn serde() {
+    fn serde_handshake() {
         let h = Handshake {
             app_name: "wavesW".to_string(),
             version: Version {
